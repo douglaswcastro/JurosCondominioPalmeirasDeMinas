@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Juros e Multa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm p-4">
+                    <h1 class="text-center mb-4">Calculadora de Juros e Multa</h1>
+                    <h2 class="text-center mb-4">Condominio Palmeiras de Minas</h2>
+                    <form id="calcForm">
+                        <div class="mb-3">
+                            <label class="form-label">Valor do Boleto:</label>
+                            <input type="number" step="0.01" id="valor" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Data de Vencimento:</label>
+                            <input type="date" id="vencimento" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Multa por atraso (R$):</label>
+                            <input type="number" step="0.01" id="multa_valor" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Juros diário (R$):</label>
+                            <input type="number" step="0.01" id="juros_valor" class="form-control" required>
+                        </div>
+                        <button type="button" class="btn btn-primary w-100" onclick="calcular()">Calcular</button>
+                    </form>
+                    <div id="resultado" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calcular() {
+            const valor = parseFloat(document.getElementById('valor').value);
+            const vencimento = new Date(document.getElementById('vencimento').value);
+            const multaValor = parseFloat(document.getElementById('multa_valor').value);
+            const jurosValor = parseFloat(document.getElementById('juros_valor').value);
+            const hoje = new Date();
+            
+            let resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = '';
+            
+            if (hoje <= vencimento) {
+                resultadoDiv.innerHTML = `<div class='alert alert-success'><strong>Valor a pagar:</strong> R$ ${valor.toFixed(2)}<br>Sem multa nem juros.</div>`;
+                return;
+            }
+            
+            const diasAtraso = Math.floor((hoje - vencimento) / (1000 * 60 * 60 * 24));
+            const multa = multaValor;
+            const juros = jurosValor * diasAtraso;
+            const total = valor + multa + juros;
+            
+            resultadoDiv.innerHTML = `
+                <div class='alert alert-info'>
+                    <h4>Resultado:</h4>
+                    <p><strong>Valor original:</strong> R$ ${valor.toFixed(2)}</p>
+                    <p><strong>Dias Atrasado:</strong> ${diasAtraso}</p>
+                    <p><strong>Multa:</strong> R$ ${multa.toFixed(2)}</p>
+                    <p><strong>Juros:</strong> R$ ${juros.toFixed(2)}</p>
+                    <p><strong>Total a pagar:</strong> R$ ${total.toFixed(2)}</p>
+                </div>
+            `;
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
